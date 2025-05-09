@@ -1,10 +1,10 @@
 [gd_scene load_steps=14 format=3 uid="uid://bfqu87r1mfsng"]
 
-[ext_resource type="Script" path="res://Scripts/Gameplay/StageController.gd" id="1_fwmen"]
+[ext_resource type="Script" uid="uid://b30ch34y64a5c" path="res://Scripts/Gameplay/StageController.gd" id="1_fwmen"]
 [ext_resource type="PackedScene" uid="uid://dsfcmnuk1bmxa" path="res://Scenes/MemorySlot.tscn" id="1_pt8x6"]
 [ext_resource type="PackedScene" uid="uid://chuke612m828x" path="res://Scenes/Photo.tscn" id="2_r0v0p"]
 [ext_resource type="Texture2D" uid="uid://bi3cjqrkkl4bh" path="res://Assets/default.jpg" id="3_2e00o"]
-[ext_resource type="Script" path="res://Scripts/UI/ButtonBar.gd" id="4_0sev1"]
+[ext_resource type="Script" uid="uid://br3d2fgomq46e" path="res://Scripts/UI/ButtonBar.gd" id="4_0sev1"]
 
 [sub_resource type="GDScript" id="GDScript_3245s"]
 script/source = "extends Node
@@ -134,8 +134,8 @@ position = Vector2(1, 0)
 scale = Vector2(765.785, 5.29419)
 emitting = false
 amount = 60
-process_material = SubResource("ParticleProcessMaterial_1a6ex")
 lifetime = 4.0
+process_material = SubResource("ParticleProcessMaterial_1a6ex")
 
 [node name="OverlayLayer" type="CanvasLayer" parent="UI"]
 layer = 5

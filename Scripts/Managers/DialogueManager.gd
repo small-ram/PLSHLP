@@ -8,7 +8,7 @@ func load_tree(id:String) -> void:
 	var j = JSON.new()
 	if j.parse(FileAccess.get_file_as_string(file)) == OK:
 		data = j.data
-		_show_panel(data["text"], data["choices"])
+		_show_panel(data.get("text", data.get("body", "")), data.get("choices", []))
 	else:
 		push_error("Dialogue JSON parse error: %s" % file)
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://chuke612m828x"]
 
-[ext_resource type="Script" path="res://Scripts/Gameplay/Photo.gd" id="1_f6u5o"]
+[ext_resource type="Script" uid="uid://bdahryimgainm" path="res://Scripts/Gameplay/Photo.gd" id="1_f6u5o"]
 [ext_resource type="Texture2D" uid="uid://bs481516o2k1b" path="res://Assets/horse.jpg" id="2_c27o4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gdkrx"]
