@@ -11,6 +11,7 @@ signal snapped(photo, slot)
 var _dragging     : bool    = false
 var _drag_offset  : Vector2 = Vector2.ZERO
 var _snapped      : bool    = false      # so Stage-4 can unlock us safely
+var _in_hand    : bool = false     
 
 func _ready() -> void:
 	# Pickable → Godot will forward _input_event automatically;
@@ -30,13 +31,19 @@ func _input_event(_viewport, event, _shape_idx) -> void:
 		if event.pressed:
 			# Start dragging
 			_dragging    = true
+			_in_hand   = true          
 			_drag_offset = global_position - event.position
 			move_to_front()                       # bring to top of draw order
 		else:
 			# Mouse released
 			if _dragging:
 				_dragging = false
+				_in_hand  = false     
 				_try_snap()
+				
+func is_in_hand() -> bool:
+	return _in_hand
+
 
 func _input(event: InputEvent) -> void:
 	if _dragging and event is InputEventMouseMotion:

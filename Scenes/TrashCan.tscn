@@ -7,9 +7,8 @@
 script = ExtResource("1_dc2im")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-visibility_layer = 8
 texture = ExtResource("2_c6rd7")
 
 [node name="CollisionShape2D" type="CollisionPolygon2D" parent="."]
-visibility_layer = 8
-scale = Vector2(19.8296, 22.4342)
+scale = Vector2(0.445532, 0.684563)
+polygon = PackedVector2Array(-128, -95, -128, 95, 128, 95, 128, -95)

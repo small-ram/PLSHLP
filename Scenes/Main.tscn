@@ -49,8 +49,9 @@ offset_bottom = 40.0
 
 [node name="PhotoStack" type="Node2D" parent="Gameplay/MarginContainer"]
 
-[node name="photo_crib" parent="Gameplay/MarginContainer/PhotoStack" instance=ExtResource("2_r0v0p")]
+[node name="photo_crib" parent="Gameplay/MarginContainer/PhotoStack" groups=["discardable"] instance=ExtResource("2_r0v0p")]
 position = Vector2(1706, 541)
+collision_mask = 1
 dialog_id = "mem_crib_dialog"
 memory_id = "mem_crib"
 snap_radius = 200.0
@@ -62,25 +63,27 @@ texture = ExtResource("3_2e00o")
 [node name="CollisionPolygon2D" parent="Gameplay/MarginContainer/PhotoStack/photo_crib" index="1"]
 scale = Vector2(0.942939, 1.33708)
 
-[node name="photo_fetus" parent="Gameplay/MarginContainer/PhotoStack" instance=ExtResource("2_r0v0p")]
-position = Vector2(1780, 408)
-memory_id = "mem_fetus"
-snap_radius = 200.0
-
-[node name="Sprite2D" parent="Gameplay/MarginContainer/PhotoStack/photo_fetus" index="0"]
-position = Vector2(2.00007, 2.50001)
-texture = ExtResource("4_v1gob")
-
-[node name="CollisionPolygon2D" parent="Gameplay/MarginContainer/PhotoStack/photo_fetus" index="1"]
-scale = Vector2(0.942939, 1.33708)
-
-[node name="photo_horse" parent="Gameplay/MarginContainer/PhotoStack" instance=ExtResource("2_r0v0p")]
+[node name="photo_horse" parent="Gameplay/MarginContainer/PhotoStack" groups=["discardable"] instance=ExtResource("2_r0v0p")]
 position = Vector2(1743, 230)
+collision_mask = 1
 memory_id = "mem_horse"
 snap_radius = 200.0
 
 [node name="Sprite2D" parent="Gameplay/MarginContainer/PhotoStack/photo_horse" index="0"]
 position = Vector2(5.00002, 4)
+
+[node name="photo_fetus" parent="Gameplay/MarginContainer/PhotoStack" groups=["non_discardable"] instance=ExtResource("2_r0v0p")]
+position = Vector2(1808, 395)
+collision_mask = 1
+memory_id = "mem_fetus"
+snap_radius = 200.0
+
+[node name="Sprite2D" parent="Gameplay/MarginContainer/PhotoStack/photo_fetus" index="0"]
+position = Vector2(5.00002, 4)
+texture = ExtResource("4_v1gob")
+
+[node name="CollisionPolygon2D" parent="Gameplay/MarginContainer/PhotoStack/photo_fetus" index="1"]
+scale = Vector2(0.769444, 1.42286)
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -166,5 +169,5 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Quit"
 
 [editable path="Gameplay/MarginContainer/PhotoStack/photo_crib"]
-[editable path="Gameplay/MarginContainer/PhotoStack/photo_fetus"]
 [editable path="Gameplay/MarginContainer/PhotoStack/photo_horse"]
+[editable path="Gameplay/MarginContainer/PhotoStack/photo_fetus"]

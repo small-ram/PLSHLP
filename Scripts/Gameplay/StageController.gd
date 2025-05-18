@@ -1,6 +1,6 @@
 # scripts/Gameplay/StageController.gd
 extends Node
-
+@export var trash_spawn : Vector2 = Vector2(680, 820)   # ← editable in Inspector
 # -------------------------------------------------------------
 # ENUM & RUNTIME STATE
 # -------------------------------------------------------------
@@ -124,16 +124,17 @@ func _enter_stage3() -> void:
 func _enter_cleanup() -> void:
 	stage = Stage.CLEANUP
 
-	# re-enable dragging on snapped photos, skip non-discardables
+	# 1. unlock every photo except the fetus (non_discardable)
 	for p in get_tree().get_nodes_in_group("photos"):
 		if p.is_in_group("non_discardable"):
 			continue
 		if p.has_method("unlock_for_cleanup"):
 			p.unlock_for_cleanup()
 
+	# 2. spawn the TrashCan at the chosen position
 	var trash := TRASH_SCENE.instantiate()
 	get_tree().current_scene.add_child(trash)
-	trash.global_position = Vector2(180, 420)
+	trash.global_position = trash_spawn
 	trash.cleanup_complete.connect(_enter_end)
 
 # -------------------------------------------------------------
@@ -141,4 +142,4 @@ func _enter_cleanup() -> void:
 # -------------------------------------------------------------
 func _enter_end() -> void:
 	stage = Stage.END
-	DialogueManager.load_tree("end_text")
+	DialogueManager.load_tree("outro")

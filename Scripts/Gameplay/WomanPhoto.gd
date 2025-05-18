@@ -1,10 +1,9 @@
-extends Area2D
+extends "res://Scripts/Gameplay/Photo.gd"    # inherit drag snap
 signal all_words_transformed
 
 @export var left_margin : float = 12.0
 @export var line_height : float = 26.0
 
-@onready var sprite    := $Sprite2D
 @onready var container := $PhrasesContainer
 
 # ------------------------------------------------------------------
@@ -29,11 +28,17 @@ func _ready() -> void:
 	sprite.z_index    = 0
 
 func _input_event(_vp, event: InputEvent, _shape_idx: int) -> void:
+	# 1) woman-specific mouse handling
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_RIGHT:
 			_reveal_next_phrase()
+			return                      # stop: don't start a drag
 		elif event.button_index == MOUSE_BUTTON_LEFT:
 			_handle_phrase_click(event.global_position)
+			# no return → allow Photo.gd to treat same press as drag start
+
+	# 2) delegate all input to Photo.gd so dragging works
+	super._input_event(_vp, event, _shape_idx)
 
 # ------------------------------------------------------------------
 func _reveal_next_phrase() -> void:

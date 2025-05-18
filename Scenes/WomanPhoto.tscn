@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dgr0b1cy5uh4e" path="res://Scripts/Gameplay/WomanPhoto.gd" id="1_tc5rb"]
 [ext_resource type="Texture2D" uid="uid://cen436g0t8jc0" path="res://Assets/woman.jpg" id="2_oxlgp"]
 
-[node name="Photo" type="Area2D" groups=["photos"]]
+[node name="Photo" type="Area2D" groups=["discardable", "photos"]]
 z_index = 10
 script = ExtResource("1_tc5rb")
 
@@ -11,6 +11,7 @@ script = ExtResource("1_tc5rb")
 texture = ExtResource("2_oxlgp")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+scale = Vector2(0.131038, 0.133807)
 polygon = PackedVector2Array(-730, -960, -730, 960, 730, 960, 730, -960)
 
 [node name="PhrasesContainer" type="Node2D" parent="." groups=["non_discardable"]]
