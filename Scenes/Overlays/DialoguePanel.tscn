@@ -15,23 +15,33 @@ var body: Label = null
 var list: ItemList = null
 
 func set_text(txt: String, choices: Array) -> void:
-	# Cache child nodes once
+	# cache child nodes once
 	if body == null:
 		body = get_node(\"MarginContainer/VBoxContainer/BodyLabel\") as Label
 		list = get_node(\"MarginContainer/VBoxContainer/ChoiceList\") as ItemList
-		# Correct Godot 4 style: connect with a Callable
-		list.item_selected.connect(Callable(self, \"_on_choice\"))
-	# Populate UI
+		list.item_selected.connect(_on_choice)
+
+	# update body label
 	body.text = txt
+
+	# ensure there is at least one button
+	var local_choices: Array = choices.duplicate()
+	if local_choices.is_empty():
+		local_choices.append({ \"label\": \"Continue\", \"next\": \"\" })
+
+	# populate list
 	list.clear()
-	for c in choices:
+	for c in local_choices:
 		list.add_item(c[\"label\"])
 		list.set_item_metadata(list.item_count - 1, c[\"next\"])
 
+	# Always leave enough height for at least one button:
+	list.custom_minimum_size.y = 200
+
 func _on_choice(idx: int) -> void:
-	var next_id: String = list.get_item_metadata(idx) as String
-	queue_free()                 # remove the panel
-	choice_made.emit(next_id)    # notify DialogueManager
+	var next_id := list.get_item_metadata(idx) as String
+	queue_free()                 # close the panel
+	choice_made.emit(next_id)    # tell DialogueManager
 "
 
 [node name="DialoguePanel" type="Panel"]
@@ -47,8 +57,8 @@ script = SubResource("GDScript_p12xf")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 907.0
+offset_bottom = 584.0
 theme_override_constants/margin_left = 40
 theme_override_constants/margin_top = 40
 theme_override_constants/margin_right = 40

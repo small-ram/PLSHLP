@@ -1,5 +1,5 @@
 {
-  "id": "intro",
+  "id": "outro",
   "text": "This is the closest to freedom I will ever get…",
   "choices": [
 	{"label": "Continue", "next": "cleanup_start"}

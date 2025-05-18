@@ -25,6 +25,11 @@ StageController="*res://Scripts/Gameplay/StageController.gd"
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 
+[global_group]
+
+discardable=""
+non_discardable=""
+
 [input]
 
 ui_cancel={

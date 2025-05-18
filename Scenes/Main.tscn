@@ -1,21 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://bfqu87r1mfsng"]
+[gd_scene load_steps=12 format=3 uid="uid://bfqu87r1mfsng"]
 
 [ext_resource type="Script" uid="uid://b30ch34y64a5c" path="res://Scripts/Gameplay/StageController.gd" id="1_fwmen"]
 [ext_resource type="PackedScene" uid="uid://dsfcmnuk1bmxa" path="res://Scenes/MemorySlot.tscn" id="1_pt8x6"]
 [ext_resource type="PackedScene" uid="uid://chuke612m828x" path="res://Scenes/Photo.tscn" id="2_r0v0p"]
-[ext_resource type="Texture2D" uid="uid://bi3cjqrkkl4bh" path="res://Assets/default.jpg" id="3_2e00o"]
+[ext_resource type="Texture2D" uid="uid://bi3cjqrkkl4bh" path="res://Assets/crib.jpg" id="3_2e00o"]
 [ext_resource type="Script" uid="uid://br3d2fgomq46e" path="res://Scripts/UI/ButtonBar.gd" id="4_0sev1"]
-
-[sub_resource type="GDScript" id="GDScript_3245s"]
-script/source = "extends Node
-# Empty on purpose – you’ll add Stage logic later.
-"
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_mrk3f"]
-size = Vector2(240, 207)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_jplre"]
-size = Vector2(248, 210)
+[ext_resource type="Texture2D" uid="uid://clocgk0plv58n" path="res://Assets/fetus.jpg" id="4_v1gob"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8o11j"]
 bg_color = Color(0.0666667, 0.0666667, 0.0666667, 1)
@@ -47,41 +37,50 @@ scale_max = 0.8
 color_ramp = SubResource("GradientTexture1D_b00mg")
 
 [node name="Main" type="Node2D"]
-script = SubResource("GDScript_3245s")
 
 [node name="StageController" type="Node" parent="."]
 script = ExtResource("1_fwmen")
 
 [node name="Gameplay" type="Node2D" parent="."]
 
-[node name="PhotoStack" type="Node2D" parent="Gameplay"]
+[node name="MarginContainer" type="MarginContainer" parent="Gameplay"]
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="photo_crib" parent="Gameplay/PhotoStack" instance=ExtResource("2_r0v0p")]
-position = Vector2(1699, 595)
+[node name="PhotoStack" type="Node2D" parent="Gameplay/MarginContainer"]
+
+[node name="photo_crib" parent="Gameplay/MarginContainer/PhotoStack" instance=ExtResource("2_r0v0p")]
+position = Vector2(1706, 541)
+dialog_id = "mem_crib_dialog"
 memory_id = "mem_crib"
 snap_radius = 200.0
 
-[node name="Sprite2D" parent="Gameplay/PhotoStack/photo_crib" index="0"]
+[node name="Sprite2D" parent="Gameplay/MarginContainer/PhotoStack/photo_crib" index="0"]
 position = Vector2(2.00007, 2.50001)
-scale = Vector2(0.147783, 0.120349)
 texture = ExtResource("3_2e00o")
 
-[node name="CollisionShape2D" parent="Gameplay/PhotoStack/photo_crib" index="1"]
-position = Vector2(2, 2.5)
-shape = SubResource("RectangleShape2D_mrk3f")
+[node name="CollisionPolygon2D" parent="Gameplay/MarginContainer/PhotoStack/photo_crib" index="1"]
+scale = Vector2(0.942939, 1.33708)
 
-[node name="photo_horse" parent="Gameplay/PhotoStack" instance=ExtResource("2_r0v0p")]
-position = Vector2(1697, 300)
+[node name="photo_fetus" parent="Gameplay/MarginContainer/PhotoStack" instance=ExtResource("2_r0v0p")]
+position = Vector2(1780, 408)
+memory_id = "mem_fetus"
+snap_radius = 200.0
+
+[node name="Sprite2D" parent="Gameplay/MarginContainer/PhotoStack/photo_fetus" index="0"]
+position = Vector2(2.00007, 2.50001)
+texture = ExtResource("4_v1gob")
+
+[node name="CollisionPolygon2D" parent="Gameplay/MarginContainer/PhotoStack/photo_fetus" index="1"]
+scale = Vector2(0.942939, 1.33708)
+
+[node name="photo_horse" parent="Gameplay/MarginContainer/PhotoStack" instance=ExtResource("2_r0v0p")]
+position = Vector2(1743, 230)
 memory_id = "mem_horse"
 snap_radius = 200.0
 
-[node name="Sprite2D" parent="Gameplay/PhotoStack/photo_horse" index="0"]
+[node name="Sprite2D" parent="Gameplay/MarginContainer/PhotoStack/photo_horse" index="0"]
 position = Vector2(5.00002, 4)
-scale = Vector2(0.147268, 0.167197)
-
-[node name="CollisionShape2D" parent="Gameplay/PhotoStack/photo_horse" index="1"]
-position = Vector2(5, 4)
-shape = SubResource("RectangleShape2D_jplre")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -112,12 +111,17 @@ theme_override_constants/margin_bottom = 20
 
 [node name="mem_crib" parent="UI/WorkspaceLayer/WorkspacePanel/MarginContainer" instance=ExtResource("1_pt8x6")]
 position = Vector2(198, -13)
-scale = Vector2(10, 10)
+scale = Vector2(3.98795, 3.26667)
 memory_id = "mem_crib"
 
+[node name="mem_fetus" parent="UI/WorkspaceLayer/WorkspacePanel/MarginContainer" instance=ExtResource("1_pt8x6")]
+position = Vector2(362, 380)
+scale = Vector2(3.98795, 3.26667)
+memory_id = "mem_fetus"
+
 [node name="mem_horse" parent="UI/WorkspaceLayer/WorkspacePanel/MarginContainer" instance=ExtResource("1_pt8x6")]
-position = Vector2(616, 153)
-scale = Vector2(10, 10)
+position = Vector2(967, 227)
+scale = Vector2(4.22609, 3.64826)
 memory_id = "mem_horse"
 
 [node name="MindPanel" type="Panel" parent="UI/WorkspaceLayer"]
@@ -161,5 +165,6 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Quit"
 
-[editable path="Gameplay/PhotoStack/photo_crib"]
-[editable path="Gameplay/PhotoStack/photo_horse"]
+[editable path="Gameplay/MarginContainer/PhotoStack/photo_crib"]
+[editable path="Gameplay/MarginContainer/PhotoStack/photo_fetus"]
+[editable path="Gameplay/MarginContainer/PhotoStack/photo_horse"]

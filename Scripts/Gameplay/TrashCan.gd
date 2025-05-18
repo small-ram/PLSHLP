@@ -7,13 +7,16 @@ func _ready() -> void:
 	body_entered.connect(_on_body)
 
 func _on_body(body: Node) -> void:
-	if body.is_in_group(allowed_group):
-		body.queue_free()
-		if _all_cleared():
-			cleanup_complete.emit()
+	if not body.is_in_group(allowed_group):
+		return
+	body.queue_free()
+	if _all_cleared():
+		cleanup_complete.emit()
 
 func _all_cleared() -> bool:
 	for p in get_tree().get_nodes_in_group("photos"):
+		if p.is_in_group("non_discardable"):
+			continue          # ignore fetus or any keepers
 		if p.is_inside_tree():
 			return false
 	return true

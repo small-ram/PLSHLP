@@ -1,95 +1,144 @@
 # scripts/Gameplay/StageController.gd
 extends Node
 
+# -------------------------------------------------------------
+# ENUM & RUNTIME STATE
+# -------------------------------------------------------------
 enum Stage { INTRO, STAGE1, STAGE2, STAGE3, CLEANUP, END }
-var stage: Stage = Stage.INTRO
-var photos_needed: int = 0
-var snaps_done: int = 0
-var woman: Node = null
+var stage : Stage = Stage.INTRO
 
+var photos_needed : int = 0
+var snaps_done    : int = 0
+
+var gameplay : Node        = null
+var overlay  : CanvasLayer = null
+var woman    : Node        = null      # keep reference if you ever need it
+
+# -------------------------------------------------------------
+# EXPORTED NODE-PATHS  (leave empty to let the script auto-find)
+# -------------------------------------------------------------
+@export_node_path("Node")        var gameplay_path : NodePath
+@export_node_path("CanvasLayer") var overlay_path  : NodePath
+@export_node_path("Node")        var stack_path    : NodePath   # “PhotoStack”
+
+# -------------------------------------------------------------
+# PRELOADED SCENES
+# -------------------------------------------------------------
 const INTRO_PANEL := preload("res://Scenes/Overlays/IntroPanel.tscn")
 const WOMAN_SCENE := preload("res://Scenes/WomanPhoto.tscn")
 const FETUS_SCENE := preload("res://Scenes/FetusPhoto.tscn")
 const TRASH_SCENE := preload("res://Scenes/TrashCan.tscn")
 
-var gameplay: Node = null
-var overlay: CanvasLayer = null
+# -------------------------------------------------------------
+# HELPER: find node by path or fall back to name-search
+# -------------------------------------------------------------
+func _fetch_node(path: NodePath, fallback_name: String) -> Node:
+	var n: Node = null
+	if path != NodePath(""):
+		n = get_node_or_null(path)
+	if n == null:
+		n = get_tree().current_scene.find_child(fallback_name, true, false)
+	return n
 
+# -------------------------------------------------------------
+# READY
+# -------------------------------------------------------------
 func _ready() -> void:
-	var root = get_tree().current_scene
+	# 1. locate key layers
+	gameplay = _fetch_node(gameplay_path, "Gameplay")
+	overlay  = _fetch_node(overlay_path,  "OverlayLayer")
 
-	# 1) Find & hide Gameplay
-	gameplay = root.find_child("Gameplay", true, false)
-	if gameplay == null:
-		push_error("StageController: Could not find 'Gameplay'!")
-	else:
+	if gameplay:
 		gameplay.visible = false
-
-	# 2) Find OverlayLayer & spawn intro
-	overlay = root.find_child("OverlayLayer", true, false) as CanvasLayer
-	if overlay == null:
-		push_error("OverlayLayer not found! Children of root are: " 
-			+ str(root.get_children().map(func(c): return c.name)))
 	else:
-		var intro = INTRO_PANEL.instantiate()
+		push_error("StageController: could not find Gameplay layer!")
+
+	if overlay:
+		var intro := INTRO_PANEL.instantiate()
 		overlay.add_child(intro)
 		intro.intro_finished.connect(_enter_stage1)
+	else:
+		push_error("StageController: could not find OverlayLayer!")
 
-	# 3) Pre-connect all photos for Stage1
+	# 2. set up photo-snap counting for Stage 1
 	for p in get_tree().get_nodes_in_group("photos"):
 		p.snapped.connect(_on_photo_snapped)
 		photos_needed += 1
 
-# ---------- Stage 1 ----------
+# -------------------------------------------------------------
+# STAGE 1 – regular photo puzzle
+# -------------------------------------------------------------
 func _enter_stage1() -> void:
-	stage = Stage.STAGE1
+	stage      = Stage.STAGE1
 	snaps_done = 0
-	# --- CLEAR ANY LEFTOVER PANELS ---
+
 	if overlay:
 		for child in overlay.get_children():
 			child.queue_free()
-	# Now un-hide photos & slots
+
 	if gameplay:
 		gameplay.visible = true
-	print(">>> ENTER STAGE 1")
-
 
 func _on_photo_snapped(_p, _s) -> void:
+	if stage != Stage.STAGE1:
+		return
 	snaps_done += 1
-	if snaps_done == photos_needed and stage == Stage.STAGE1:
+	if snaps_done == photos_needed:
 		_enter_stage2()
 
-# ---------- Stage 2 ----------
+# -------------------------------------------------------------
+# STAGE 2 – woman phrases
+# -------------------------------------------------------------
 func _enter_stage2() -> void:
 	stage = Stage.STAGE2
-	woman = WOMAN_SCENE.instantiate()
-	var stack = get_tree().current_scene.find_child("PhotoStack", true, false)
-	if stack:
-		stack.add_child(woman)
-		woman.position = Vector2(1050, 300)
-		woman.z_index = 10
-		woman.all_words_transformed.connect(_enter_stage3)
-	else:
-		push_error("StageController: 'PhotoStack' not found!")
 
-# ---------- Stage 3 ----------
+	var stack := _fetch_node(stack_path, "PhotoStack")
+	if stack == null:
+		push_error("StageController: could not find PhotoStack!")
+		return
+
+	woman = WOMAN_SCENE.instantiate()
+	stack.add_child(woman)
+	woman.position = Vector2(1050, 300)   # tweak for your resolution
+	woman.z_index  = 10
+	woman.all_words_transformed.connect(_enter_stage3)
+
+# -------------------------------------------------------------
+# STAGE 3 – fetus
+# -------------------------------------------------------------
 func _enter_stage3() -> void:
 	stage = Stage.STAGE3
-	var fetus = FETUS_SCENE.instantiate()
+
+	var fetus := FETUS_SCENE.instantiate()
 	get_tree().current_scene.add_child(fetus)
 	fetus.global_position = Vector2(640, 360)
-	var tw = fetus.create_tween()
-	tw.tween_property(fetus, "scale", Vector2.ONE * 1.3, 1.0)
+
+	# pulse tween
+	fetus.create_tween().tween_property(fetus, "scale", Vector2.ONE * 1.3, 1.0)
+
 	fetus.dialog_done.connect(_enter_cleanup)
 
-# ---------- Stage 4 / Cleanup ----------
+# -------------------------------------------------------------
+# STAGE 4 – cleanup / trash-can
+# -------------------------------------------------------------
 func _enter_cleanup() -> void:
 	stage = Stage.CLEANUP
-	var trash = TRASH_SCENE.instantiate()
+
+	# re-enable dragging on snapped photos, skip non-discardables
+	for p in get_tree().get_nodes_in_group("photos"):
+		if p.is_in_group("non_discardable"):
+			continue
+		if p.has_method("unlock_for_cleanup"):
+			p.unlock_for_cleanup()
+
+	var trash := TRASH_SCENE.instantiate()
 	get_tree().current_scene.add_child(trash)
 	trash.global_position = Vector2(180, 420)
 	trash.cleanup_complete.connect(_enter_end)
 
+# -------------------------------------------------------------
+# STAGE 5 – ending
+# -------------------------------------------------------------
 func _enter_end() -> void:
 	stage = Stage.END
 	DialogueManager.load_tree("end_text")

@@ -1,0 +1,31 @@
+hra to do:
+https://chatgpt.com/g/g-p-67f9173c25e0819181df84898cb83a97-game/c/681df035-4b9c-8007-88f3-27e232ba53c3?model=o3
+
+1)Remaining optional enhancements
+Resolution / aspect scaling – Convert hard-coded coordinates to anchored Control nodes or percent-based layouts.
+
+Audio overlap – Switch AudioManager to a one-shot-player pool if simultaneous snaps, hover sounds, etc. are desired.
+
+Content externalisation – Move intro lines and woman phrases to JSON or CSV for localisation.
+
+Accessibility – Keyboard navigation for intro and dialog choices; toggle for reduced motion.
+
+QA tooling – expose a debug flag that lets ButtonBar skip to any stage, spawn SFX test, etc.
+
+
+
+
+
+
+
+
+2)Layout – In Main.tscn, wrap PhotoStack in a right-anchored MarginContainer. Then set each photo’s position relative to that container (e.g., (0,0), (0,250)), so it adapts to resolution changes.
+3) Make bin delete photos
+4) Hover highlight	Make the bin brighten when a draggable photo is picked up during Stage 4.	Add a Tween in TrashCan.gd and connect Photo.drag_started/ended or let StageController broadcast a custom signal.
+Sound slot	Give the scene an AudioStreamPlayer child pre-set with the “crumple” sound so you don’t need to spawn one each time in code.
+
+
+5) Add moving parts
+6) Add puzzle
+7) add mmmore photos 
+8) add dialogues to the photos 
